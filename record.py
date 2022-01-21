@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from tempfile import TemporaryFile
 import numpy as np
 import os
 import shutil
@@ -30,9 +31,15 @@ else:
 from utils import Screenshot, XboxController
 
 IMAGE_SIZE = (320, 240)
-IDLE_SAMPLE_RATE = 1500
-SAMPLE_RATE = 200
-IMAGE_TYPE = ".png"
+IDLE_SAMPLE_RATE = 1000
+SAMPLE_RATE = 10
+IMAGE_TYPE = ".jpg"
+
+# New for easy user setup
+IMAGE_SIZE_OPTIONS = [(1366, 768),
+                      (1920, 1080),
+                      (2560, 1440),
+                      (3840, 2160)]
 
 class MainWindow():
     """ Main frame of the application
@@ -43,7 +50,7 @@ class MainWindow():
         self.sct = mss.mss()
 
         self.root.title('Data Acquisition')
-        self.root.geometry("660x325")
+        self.root.geometry("1000x325")
         self.root.resizable(False, False)
 
         # Init controller
@@ -88,10 +95,21 @@ class MainWindow():
         self.outputDirStrVar = tk.StringVar()
         self.txt_outputDir = tk.Entry(textframe, textvariable=self.outputDirStrVar, width=100)
         self.txt_outputDir.pack(side=tk.LEFT)
-        self.outputDirStrVar.set("samples/" + datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
+        self.outputDirStrVar.set("samples/" + datetime.now().strftime('%Y-%m-%d_%H_%M'))
 
         self.record_button = ttk.Button(bottom_half, text="Record", command=self.on_btn_record)
         self.record_button.pack(side = tk.LEFT, padx=5)
+
+        ## New buttons, for automatic setup
+        # Resolution button
+        self.resolution = tk.StringVar(self.root)
+        self.resolution.set(IMAGE_SIZE_OPTIONS[1])
+        self.OptionMenu = tk.OptionMenu(self.root, self.resolution, *IMAGE_SIZE_OPTIONS)
+        self.OptionMenu.pack(side = tk.RIGHT, padx=5)
+        self.confirmRes = tk.Button(self.root, text="Set Resolution", command=self.on_res_confirm)
+        self.confirmRes.pack(side=tk.RIGHT, padx=5)
+
+
 
 
     def init_plot(self):
@@ -101,6 +119,12 @@ class MainWindow():
         self.fig = Figure(figsize=(4,3), dpi=80) # 320,240
         self.axes = self.fig.add_subplot(111)
 
+    def on_res_confirm(self):
+        temp = self.resolution.get().replace("(", "").replace(")", "")
+        temp = [int(s) for s in temp.split(", ")]
+        Screenshot.SRC_W = temp[0]
+        Screenshot.SRC_H = temp[1]
+        print(f"Screenshot dims {Screenshot.SRC_W}, {Screenshot.SRC_H}. Temp dims {temp}")
 
     def on_timer(self):
         self.poll()
