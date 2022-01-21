@@ -83,6 +83,17 @@ class MainWindow():
         self.img_panel = tk.Label(top_half, image=ImageTk.PhotoImage("RGB", size=IMAGE_SIZE)) # Placeholder
         self.img_panel.pack(side = tk.LEFT, expand=False, padx=5)
 
+        # Screen offsets
+        self.xoffset = tk.IntVar()
+        self.xoffset.trace("w", self.on_res_confirm)
+        self.xshifter = tk.Scale(top_half, variable=self.xoffset, from_=0, to=Screenshot.SRC_W, orient=tk.HORIZONTAL)
+        self.xshifter.pack(side=tk.RIGHT, padx=5, pady=5)
+
+        self.yoffset = tk.IntVar()
+        self.yoffset.trace("w", self.on_res_confirm)
+        self.yshifter = tk.Scale(top_half, variable=self.yoffset, from_=0, to=Screenshot.SRC_H, orient=tk.VERTICAL)
+        self.yshifter.pack(side=tk.RIGHT, padx=5, pady=5)
+
         # Joystick
         self.init_plot()
         self.PlotCanvas = FigCanvas(figure=self.fig, master=top_half)
@@ -100,17 +111,12 @@ class MainWindow():
         self.record_button = ttk.Button(bottom_half, text="Record", command=self.on_btn_record)
         self.record_button.pack(side = tk.LEFT, padx=5)
 
-        ## New buttons, for automatic setup
-        # Resolution button
+        # Resolution  
         self.resolution = tk.StringVar(self.root)
         self.resolution.set(IMAGE_SIZE_OPTIONS[1])
+        self.resolution.trace("w", self.on_res_confirm)
         self.OptionMenu = tk.OptionMenu(self.root, self.resolution, *IMAGE_SIZE_OPTIONS)
-        self.OptionMenu.pack(side = tk.RIGHT, padx=5)
-        self.confirmRes = tk.Button(self.root, text="Set Resolution", command=self.on_res_confirm)
-        self.confirmRes.pack(side=tk.RIGHT, padx=5)
-
-
-
+        self.OptionMenu.pack(side = tk.RIGHT, padx=5, pady=5)
 
     def init_plot(self):
         self.plotMem = 50 # how much data to keep on the plot
@@ -119,12 +125,13 @@ class MainWindow():
         self.fig = Figure(figsize=(4,3), dpi=80) # 320,240
         self.axes = self.fig.add_subplot(111)
 
-    def on_res_confirm(self):
+    def on_res_confirm(self, *args):
         temp = self.resolution.get().replace("(", "").replace(")", "")
         temp = [int(s) for s in temp.split(", ")]
         Screenshot.SRC_W = temp[0]
         Screenshot.SRC_H = temp[1]
-        print(f"Screenshot dims {Screenshot.SRC_W}, {Screenshot.SRC_H}. Temp dims {temp}")
+        Screenshot.OFFSET_X = self.xoffset.get()
+        Screenshot.OFFSET_Y = self.yoffset.get()
 
     def on_timer(self):
         self.poll()
