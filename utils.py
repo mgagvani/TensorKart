@@ -24,8 +24,8 @@ def resize_image(img):
 
 
 class Screenshot(object):
-    SRC_W = 640
-    SRC_H = 480
+    SRC_W = 1920
+    SRC_H = 1080
     SRC_D = 3
 
     OFFSET_X = 0
@@ -71,12 +71,29 @@ class XboxController(object):
 
 
     def read(self):
-        x = self.LeftJoystickX
-        y = self.LeftJoystickY
-        a = self.A
-        b = self.X # b=1, x=2
-        rb = self.RightBumper
-        return [x, y, a, b, rb]
+        L_X = self.LeftJoystickX
+        L_Y = self.LeftJoystickY
+        R_X = self.RightJoystickX
+        R_Y = self.RightJoystickY
+        LT = self.LeftTrigger
+        RT = self.RightTrigger
+        LB = self.LeftBumper
+        RB = self.RightBumper
+        A = self.A
+        X = self.X
+        Y = self.Y
+        B = self.B
+        LTh = self.LeftThumb
+        RTh = self.RightThumb
+        Back = self.Back
+        Start = self.Start
+        # dpad does not work
+        DP_L = self.LeftDPad
+        DP_R = self.RightDPad
+        DP_U = self.UpDPad
+        DP_D = self.DownDPad
+
+        return [L_X, L_Y, R_X, R_Y, LT, RT, LB, RB, A, X, Y, B, LTh, RTh, Back, Start]
 
 
     def _monitor_controller(self):

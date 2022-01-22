@@ -50,7 +50,7 @@ class MainWindow():
         self.sct = mss.mss()
 
         self.root.title('Data Acquisition')
-        self.root.geometry("1000x325")
+        self.root.geometry("800x325")
         self.root.resizable(False, False)
 
         # Init controller
@@ -86,12 +86,12 @@ class MainWindow():
         # Screen offsets
         self.xoffset = tk.IntVar()
         self.xoffset.trace("w", self.on_res_confirm)
-        self.xshifter = tk.Scale(top_half, variable=self.xoffset, from_=0, to=Screenshot.SRC_W, orient=tk.HORIZONTAL)
+        self.xshifter = tk.Scale(top_half, variable=self.xoffset, from_=0, to=640, orient=tk.HORIZONTAL)
         self.xshifter.pack(side=tk.RIGHT, padx=5, pady=5)
 
         self.yoffset = tk.IntVar()
         self.yoffset.trace("w", self.on_res_confirm)
-        self.yshifter = tk.Scale(top_half, variable=self.yoffset, from_=0, to=Screenshot.SRC_H, orient=tk.VERTICAL)
+        self.yshifter = tk.Scale(top_half, variable=self.yoffset, from_=0, to=480, orient=tk.VERTICAL)
         self.yshifter.pack(side=tk.RIGHT, padx=5, pady=5)
 
         # Joystick
@@ -120,7 +120,7 @@ class MainWindow():
 
     def init_plot(self):
         self.plotMem = 50 # how much data to keep on the plot
-        self.plotData = [[0] * (5)] * self.plotMem # mem storage for plot
+        self.plotData = [[0] * (16)] * self.plotMem # mem storage for plot
 
         self.fig = Figure(figsize=(4,3), dpi=80) # 320,240
         self.axes = self.fig.add_subplot(111)
@@ -192,6 +192,17 @@ class MainWindow():
         self.axes.plot(range(0,self.plotMem), x[:,2], 'g')
         self.axes.plot(range(0,self.plotMem), x[:,3], 'k')
         self.axes.plot(range(0,self.plotMem), x[:,4], 'y')
+        self.axes.plot(range(0,self.plotMem), x[:,5], 'c')
+        self.axes.plot(range(0,self.plotMem), x[:,6], 'm')
+        self.axes.plot(range(0,self.plotMem), x[:,7], 'skyblue')
+        self.axes.plot(range(0,self.plotMem), x[:,8], 'springgreen')
+        self.axes.plot(range(0,self.plotMem), x[:,9], 'orange')
+        self.axes.plot(range(0,self.plotMem), x[:,10], 'maroon')
+        self.axes.plot(range(0,self.plotMem), x[:,11], 'peachpuff')
+        self.axes.plot(range(0,self.plotMem), x[:,12], 'lime')
+        self.axes.plot(range(0,self.plotMem), x[:,13], 'plum')
+        self.axes.plot(range(0,self.plotMem), x[:,14], 'navy')
+        self.axes.plot(range(0,self.plotMem), x[:,15], 'aqua')
         self.PlotCanvas.draw()
 
 
